@@ -29,6 +29,6 @@ database:
   # batch_size и flush_interval не нужны для SQLite
 
 polling:
-  interval: "0.2s"
+  interval: "1s"
   timeout: "30s"
   
