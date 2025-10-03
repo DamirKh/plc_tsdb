@@ -1,0 +1,34 @@
+plc_connection:
+  host: "192.168.0.140"
+  slot: 0
+
+tags:
+  LIT0091e:
+    type: "float32"
+    description: "Уровень в емкости 0091"
+    unit: "m"
+    
+  D:
+    type: "int32" 
+    description: "Счетчик импульсов"
+    unit: "pulses"
+    
+  "TestHeartBeat":
+    type: "int32"
+    description: "Heart Beat"
+
+  "Program:MainProgram.hbTimer.ACC":
+    type: "int32"
+    scale_factor: 0.001
+    description: "Program tag"
+
+
+database:
+  type: "sqlite"
+  database: "./data"  # Папка для SQLite файла
+  # batch_size и flush_interval не нужны для SQLite
+
+polling:
+  interval: "0.2s"
+  timeout: "30s"
+  
