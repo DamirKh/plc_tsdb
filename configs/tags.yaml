@@ -3,25 +3,87 @@ plc_connection:
   slot: 0
 
 tags:
-  LIT0091e:
+  SD1A:
     type: "float32"
-    description: "Уровень в емкости 0091"
-    unit: "m"
-    
-  D:
-    type: "int32" 
-    description: "Счетчик импульсов"
-    unit: "pulses"
-    
-  "TestHeartBeat":
-    type: "int32"
-    description: "Heart Beat"
+    description: "Gaz Generator RPM"
+    unit: "RPM"
+  SD2:
+    type: "float32"
+    description: "Power Turbine RPM"
+    unit: "RPM"
+  TC19:
+    type: "float32"
+    description: "Air inlet temp TC19"
+    unit: "C"
+  TC20:
+    type: "float32"
+    description: "Air inlet temp TC20"
+    unit: "C"
+#  VGV_DEM:
+#    type: "float32"
+#    description: "GAZ generator variable geometry demand"
+#    unit: "mm"
+  VGVFB:
+    type: "float32"
+    description: "GAZ generator variable geometry feedback"
+    unit: "mm"
+  PT8:
+    type: "float32"
+    description: "GAZ generator discharge pressure"
+    unit: "BarG"
+  PT258:
+    type: "float32"
+    description: "Interduct pressure"
+    unit: "BarG"
+  ssi_TurbineTemp:
+    type: "float32"
+    description: "Average Power Turbine Exhaust Temp "
+    unit: "C"
+  PT9:
+    type: "float32"
+    description: "Turbine Exhaust Pressure"
+    unit: "BarG"
+  TC101:
+    type: "float32"
+    description: "Turbine Exhaust air temp TC101"
+    unit: "C"
+  TC102:
+    type: "float32"
+    description: "Turbine Exhaust air temp TC102"
+    unit: "C"
+#  ZC13:
+#    type: "int32"
+#    description: "Fuel Demand Pilot Gaz"
+#    unit: "position"
+#  ZC12:
+#    type: "int32"
+#    description: "Fuel Demand Main Gaz"
+#    unit: "position"
+  PT181A:
+    type: "float32"
+    description: "Main Gaz Pressure A"
+    unit: "BarG"
+  PT181B:
+    type: "float32"
+    description: "Main Gaz Pressure B"
+    unit: "BarG"
+  PT182A:
+    type: "float32"
+    description: "Pilot Gaz Pressure A"
+    unit: "BarG"
+  PT182B:
+    type: "float32"
+    description: "Pilot Gaz Pressure B"
+    unit: "BarG"
 
-  "Program:MainProgram.hbTimer.ACC":
-    type: "int32"
-    scale_factor: 0.001
-    description: "Program tag"
+#  "TestHeartBeat":
+#    type: "int32"
+#    description: "Heart Beat"
 
+#  "Program:MainProgram.hbTimer.ACC":
+#    type: "int32"
+#    scale_factor: 0.001
+#    description: "Program tag"
 
 database:
   type: "sqlite"
