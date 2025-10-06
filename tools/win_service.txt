@@ -1,0 +1,19 @@
+# Создаем сервис
+tools\nssm install PLCDataCollector "c:\Users\CPC2\plc_tsdb\plc_collector.exe"
+
+# Настраиваем параметры
+tools\nssm set PLCDataCollector Description "Сбор данных с ПЛК"
+tools\nssm set PLCDataCollector AppDirectory "C:\users\CPC2\plc_tsdb\"
+tools\nssm set PLCDataCollector AppStdout "C:\users\CPC2\plc_tsdb\logs\service.log"
+tools\nssm set PLCDataCollector AppStderr "C:\users\CPC2\plc_tsdb\logs\error.log"
+tools\nssm set PLCDataCollector AppRotateFiles 1
+tools\nssm set PLCDataCollector AppRotateOnline 1
+tools\nssm set PLCDataCollector AppRotateSeconds 86400
+
+# Запускаем сервис
+tools\nssm start PLCDataCollector
+
+# Управление сервисом
+tools\nssm stop PLCDataCollector
+tools\nssm restart PLCDataCollector
+tools\nssm remove PLCDataCollector
