@@ -20,8 +20,7 @@ def load_tags_from_yaml(file_path='configs/tags.yaml'):
 
     for tag_name, tag_config in config['tags'].items():
         # Пропускаем закомментированные и служебные теги
-        if (tag_name.startswith('#') or
-                tag_name.startswith('_') or
+        if (tag_name.startswith('_') or
                 tag_name in ['timestamp', 'quality'] or
                 not isinstance(tag_config, dict)):
             excluded_tags.append(tag_name)
