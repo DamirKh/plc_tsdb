@@ -2,3 +2,5 @@
 /main.exe
 /plc_collector.exe
 /logs/
+/.idea
+*/__pycache__/*
