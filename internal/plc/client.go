@@ -139,12 +139,12 @@ func (m *PLCManager) ReadTags(tagNames []string) (map[string]interface{}, error)
 // Connect подключает один ПЛК
 func (c *PLCClient) Connect() error {
 	// Настройка пути при необходимости
-	if c.config.Slot != 0 {
-		path, err := gologix.ParsePath(fmt.Sprintf("1,%d", c.config.Slot))
-		if err == nil {
-			c.client.Path = path
-		}
-	}
+	// if c.config.Slot != 0 {
+	// 	path, err := gologix.ParsePath(fmt.Sprintf("1,%d", c.config.Slot))
+	// 	if err == nil {
+	// 		c.client.Path = path
+	// 	}
+	// }
 
 	err := c.client.Connect()
 	if err != nil {
