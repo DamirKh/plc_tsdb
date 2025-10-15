@@ -4,3 +4,5 @@
 /logs/
 /.idea
 */__pycache__/*
+tools/nssm.exe
+.vscode/

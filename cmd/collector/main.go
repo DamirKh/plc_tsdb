@@ -9,13 +9,15 @@ import (
 	"plc_tsdb/internal/service"
 )
 
+var exeDir string
+
 func main() {
 	// Определяем путь к конфигу относительно исполняемого файла
 	exePath, err := os.Executable()
 	if err != nil {
 		log.Fatalf("Ошибка определения пути: %v", err)
 	}
-	exeDir := filepath.Dir(exePath)
+	exeDir = filepath.Dir(exePath)
 
 	// Пробуем разные пути к конфигу
 	configPaths := []string{
