@@ -1,100 +1,21 @@
-plc_connection:
-  host: "11.110.18.129"
-  slot: 0
+plcs:
+  JAR:
+    host: "192.168.0.140"
+  NAR:
+    host: "192.168.0.40"
 
 tags:
-  PT1347:
+  PT0386:
+    plc: NAR
     type: "float32"
-    description: "DOWNSTREAM PRESSURE ESV-1001"
+    description: "SUCTION PRESSURE"
     unit: "kPa"
-  PT1393:
+  PT0356:
+    plc: JAR
     type: "float32"
-    description: "UPSTREAM PRESSURE ESV-1002"
-    unit: "kPa"
-
-  PDT1343:
-    type: "float32"
-    description: "MAIN PUMP PU-C001E FILTER DIFFERENTIAL PRESSURE"
-    unit: "kPa"
-  PT1343:
-    type: "float32"
-    description: "MAIN PUMP PU-C001E SUCTION PRESSURE"
-    unit: "kPa"
-  ST0510:
-    type: "float32"
-    description: "PU-C001E VFD FREQUENCY"
-    unit: "RPM"
-  ST4001_PV:
-    type: "float32"
-    description: "MAIN PUMP PU-C001E ROTOR SHAFT SPEED"
-    unit: "RPM"
-  PT1345:
-    type: "float32"
-    description: "MAIN PUMP PU-C001E DISCHARGE PRESSURE"
+    description: "SUCTION PRESSURE JAR"
     unit: "kPa"
 
-  PDT1353:
-    type: "float32"
-    description: "MAIN PUMP PU-C001F FILTER DIFFERENTIAL PRESSURE"
-    unit: "kPa"
-  PT1353:
-    type: "float32"
-    description: "MAIN PUMP PU-C001F SUCTION PRESSURE"
-    unit: "kPa"
-  ST0520:
-    type: "float32"
-    description: "PU-C001F VFD FREQUENCY"
-    unit: "RPM"
-  ST4501_PV:
-    type: "float32"
-    description: "MAIN PUMP PU-C001F ROTOR SHAFT SPEED"
-    unit: "RPM"
-  PT1355:
-    type: "float32"
-    description: "MAIN PUMP PU-C001F DISCHARGE PRESSURE"
-    unit: "kPa"
-
-  PDT1363:
-    type: "float32"
-    description: "MAIN PUMP PU-C001G FILTER DIFFERENTIAL PRESSURE"
-    unit: "kPa"
-  PT1363:
-    type: "float32"
-    description: "MAIN PUMP PU-C001G SUCTION PRESSURE"
-    unit: "kPa"
-  ST0530:
-    type: "float32"
-    description: "PU-C001G VFD FREQUENCY"
-    unit: "RPM"
-  ST5001_PV:
-    type: "float32"
-    description: "MAIN PUMP PU-C001G ROTOR SHAFT SPEED"
-    unit: "RPM"
-  PT1365:
-    type: "float32"
-    description: "MAIN PUMP PU-C001G DISCHARGE PRESSURE"
-    unit: "kPa"
-    
-  PDT1373:
-    type: "float32"
-    description: "MAIN PUMP PU-C001H FILTER DIFFERENTIAL PRESSURE"
-    unit: "kPa"
-  PT1373:
-    type: "float32"
-    description: "MAIN PUMP PU-C001H SUCTION PRESSURE"
-    unit: "kPa"
-  ST0540:
-    type: "float32"
-    description: "PU-C001H VFD FREQUENCY"
-    unit: "RPM"
-  ST5501_PV:
-    type: "float32"
-    description: "MAIN PUMP PU-C001H ROTOR SHAFT SPEED"
-    unit: "RPM"
-  PT1375:
-    type: "float32"
-    description: "MAIN PUMP PU-C001H DISCHARGE PRESSURE"
-    unit: "kPa"
 #  "Program:MainProgram.hbTimer.ACC":
 #    type: "int32"
 #    scale_factor: 0.001
@@ -106,6 +27,6 @@ database:
   # batch_size и flush_interval не нужны для SQLite
 
 polling:
-  interval: "1s"
+  interval: "0.25s"
   timeout: "30s"
   

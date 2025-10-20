@@ -3,6 +3,7 @@ package plc
 import (
 	"fmt"
 	"log"
+	"sync"
 
 	// "time"
 
@@ -68,36 +69,53 @@ func (m *PLCManager) Disconnect() {
 	}
 }
 
-// ReadAllTags читает все теги со всех ПЛК
+// ReadAllTags читает все теги со всех ПЛК параллельно
 func (m *PLCManager) ReadAllTags() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	var errors []string
 
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+
 	for plcName, client := range m.clients {
-		if !client.isConnected {
-			errors = append(errors, fmt.Sprintf("ПЛК %s не подключен", plcName))
-			continue
-		}
+		wg.Add(1)
 
-		// Получаем теги для этого ПЛК
-		tagsForPLC := m.config.GetTagsByPLC(plcName)
-		if len(tagsForPLC) == 0 {
-			continue
-		}
+		go func(plcName string, client *PLCClient) {
+			defer wg.Done()
 
-		// Читаем теги с ПЛК
-		plcTags, err := client.readTags(tagsForPLC)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("ПЛК %s: %v", plcName, err))
-			continue
-		}
+			if !client.isConnected {
+				mu.Lock()
+				errors = append(errors, fmt.Sprintf("ПЛК %s не подключен", plcName))
+				mu.Unlock()
+				return
+			}
 
-		// Добавляем теги в результат с префиксом ПЛК
-		for tagName, value := range plcTags {
-			fullTagName := fmt.Sprintf("%s/%s", plcName, tagName)
-			result[fullTagName] = value
-		}
+			// Получаем теги для этого ПЛК
+			tagsForPLC := m.config.GetTagsByPLC(plcName)
+			if len(tagsForPLC) == 0 {
+				return
+			}
+
+			// Читаем теги
+			plcTags, err := client.readTags(tagsForPLC)
+			if err != nil {
+				mu.Lock()
+				errors = append(errors, fmt.Sprintf("ПЛК %s: %v", plcName, err))
+				mu.Unlock()
+				return
+			}
+
+			// Добавляем теги в общий результат
+			mu.Lock()
+			for tagName, value := range plcTags {
+				fullTagName := fmt.Sprintf("%s/%s", plcName, tagName)
+				result[fullTagName] = value
+			}
+			mu.Unlock()
+		}(plcName, client)
 	}
+
+	wg.Wait()
 
 	if len(errors) > 0 {
 		return result, fmt.Errorf("ошибки чтения: %v", errors)

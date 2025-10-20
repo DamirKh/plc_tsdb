@@ -16,17 +16,17 @@ type PLCConfig struct {
 
 // TagConfig представляет конфигурацию тега
 type TagConfig struct {
-	PLC         string  `yaml:"plc"`                   // Имя ПЛК из секции plcs
-	Type        string  `yaml:"type"`                  // Тип данных
-	Description string  `yaml:"description"`           // Описание
-	Unit        string  `yaml:"unit,omitempty"`        // Единица измерения
-	ScaleFactor float64 `yaml:"scale_factor,omitempty"`// Коэффициент масштабирования
+	PLC         string  `yaml:"plc"`                    // Имя ПЛК из секции plcs
+	Type        string  `yaml:"type"`                   // Тип данных
+	Description string  `yaml:"description"`            // Описание
+	Unit        string  `yaml:"unit,omitempty"`         // Единица измерения
+	ScaleFactor float64 `yaml:"scale_factor,omitempty"` // Коэффициент масштабирования
 }
 
 // DatabaseConfig представляет конфигурацию БД
 type DatabaseConfig struct {
-	Type      string `yaml:"type"`
-	Database  string `yaml:"database"` // Путь к БД
+	Type     string `yaml:"type"`
+	Database string `yaml:"database"` // Путь к БД
 }
 
 // PollingConfig представляет конфигурацию опроса
@@ -37,8 +37,8 @@ type PollingConfig struct {
 
 // Config представляет полную конфигурацию
 type Config struct {
-	PLCs     map[string]PLCConfig `yaml:"plcs"`     // Map ПЛК: имя -> конфиг
-	Tags     map[string]TagConfig `yaml:"tags"`     // Map тегов: имя -> конфиг
+	PLCs     map[string]PLCConfig `yaml:"plcs"` // Map ПЛК: имя -> конфиг
+	Tags     map[string]TagConfig `yaml:"tags"` // Map тегов: имя -> конфиг
 	Database DatabaseConfig       `yaml:"database"`
 	Polling  PollingConfig        `yaml:"polling"`
 }
