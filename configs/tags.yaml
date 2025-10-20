@@ -1,84 +1,20 @@
-plc_connection:
-  host: "192.168.0.140"
-  slot: 0
+plcs:
+  JAR:
+    host: "192.168.0.140"
+  NAR:
+    host: "192.168.0.40"
 
 tags:
-  SD1A:
+  PT0386:
+    plc: NAR
     type: "float32"
-    description: "Gaz Generator RPM"
-    unit: "RPM"
-  SD2:
+    description: "SUCTION PRESSURE"
+    unit: "kPa"
+  PT0356:
+    plc: JAR
     type: "float32"
-    description: "Power Turbine RPM"
-    unit: "RPM"
-  TC19:
-    type: "float32"
-    description: "Air inlet temp TC19"
-    unit: "C"
-  TC20:
-    type: "float32"
-    description: "Air inlet temp TC20"
-    unit: "C"
-#  VGV_DEM:
-#    type: "float32"
-#    description: "GAZ generator variable geometry demand"
-#    unit: "mm"
-  VGVFB:
-    type: "float32"
-    description: "GAZ generator variable geometry feedback"
-    unit: "mm"
-  PT8:
-    type: "float32"
-    description: "GAZ generator discharge pressure"
-    unit: "BarG"
-  PT258:
-    type: "float32"
-    description: "Interduct pressure"
-    unit: "BarG"
-  ssi_TurbineTemp:
-    type: "float32"
-    description: "Average Power Turbine Exhaust Temp "
-    unit: "C"
-  PT9:
-    type: "float32"
-    description: "Turbine Exhaust Pressure"
-    unit: "BarG"
-  TC101:
-    type: "float32"
-    description: "Turbine Exhaust air temp TC101"
-    unit: "C"
-  TC102:
-    type: "float32"
-    description: "Turbine Exhaust air temp TC102"
-    unit: "C"
-#  ZC13:
-#    type: "int32"
-#    description: "Fuel Demand Pilot Gaz"
-#    unit: "position"
-#  ZC12:
-#    type: "int32"
-#    description: "Fuel Demand Main Gaz"
-#    unit: "position"
-  PT181A:
-    type: "float32"
-    description: "Main Gaz Pressure A"
-    unit: "BarG"
-  PT181B:
-    type: "float32"
-    description: "Main Gaz Pressure B"
-    unit: "BarG"
-  PT182A:
-    type: "float32"
-    description: "Pilot Gaz Pressure A"
-    unit: "BarG"
-  PT182B:
-    type: "float32"
-    description: "Pilot Gaz Pressure B"
-    unit: "BarG"
-
-#  "TestHeartBeat":
-#    type: "int32"
-#    description: "Heart Beat"
+    description: "SUCTION PRESSURE JAR"
+    unit: "kPa"
 
 #  "Program:MainProgram.hbTimer.ACC":
 #    type: "int32"
@@ -91,6 +27,6 @@ database:
   # batch_size и flush_interval не нужны для SQLite
 
 polling:
-  interval: "1s"
+  interval: "0.25s"
   timeout: "30s"
   

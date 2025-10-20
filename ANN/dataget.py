@@ -72,7 +72,7 @@ def fetch_plc_data(start_time: Union[str, pd.Timestamp, datetime, int],
 if __name__ == '__main__':
     print("Тестовое извлечение данных из БД")
     # 4. Unix наносекунды (прямой вход)
-    df4 = fetch_plc_data(1759750819912945000, 1759754710909344500)
+    df4 = fetch_plc_data(1760056269816866300, 1760066027812259300)
     print("Успешно!")
 
 

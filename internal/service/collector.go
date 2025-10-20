@@ -13,14 +13,14 @@ import (
 )
 
 type CollectorService struct {
-	plcClient *plc.PLCClient
-	dbClient  database.TSDBClient
-	config    *config.Config
-	stopChan  chan struct{}
+	plcManager *plc.PLCManager
+	dbClient   database.TSDBClient
+	config     *config.Config
+	stopChan   chan struct{}
 }
 
 func NewCollectorService(cfg *config.Config) (*CollectorService, error) {
-	plcClient := plc.NewPLCClient(cfg)
+	plcManager := plc.NewPLCManager(cfg)
 
 	dbClient, err := database.NewTSDBClient(&cfg.Database)
 	if err != nil {
@@ -28,18 +28,18 @@ func NewCollectorService(cfg *config.Config) (*CollectorService, error) {
 	}
 
 	return &CollectorService{
-		plcClient: plcClient,
-		dbClient:  dbClient,
-		config:    cfg,
-		stopChan:  make(chan struct{}),
+		plcManager: plcManager,
+		dbClient:   dbClient,
+		config:     cfg,
+		stopChan:   make(chan struct{}),
 	}, nil
 }
 
 func (s *CollectorService) Start() error {
-	if err := s.plcClient.Connect(); err != nil {
+	if err := s.plcManager.Connect(); err != nil {
 		return err
 	}
-	defer s.plcClient.Disconnect()
+	defer s.plcManager.Disconnect()
 
 	log.Printf("Запуск сбора данных с интервалом %v", s.config.Polling.Interval)
 
@@ -64,10 +64,9 @@ func (s *CollectorService) Start() error {
 }
 
 func (s *CollectorService) collectData() {
-	tags, err := s.plcClient.ReadTags()
+	tags, err := s.plcManager.ReadAllTags()
 	if err != nil {
 		log.Printf("Ошибка чтения тегов: %v", err)
-		return
 	}
 
 	timestamp := time.Now()
