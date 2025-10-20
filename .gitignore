@@ -2,3 +2,7 @@
 /main.exe
 /plc_collector.exe
 /logs/
+/.idea
+*/__pycache__/*
+tools/nssm.exe
+.vscode/
