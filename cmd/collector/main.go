@@ -9,18 +9,17 @@ import (
 	"plc_tsdb/internal/config"
 	"plc_tsdb/internal/logging"
 	"plc_tsdb/internal/service"
-
-	"github.com/danomagnum/gologix"
 )
 
 func main() {
-	var configPath, logDir string
+	var configPath, logDir, logLevel string
 	flag.StringVar(&configPath, "config", "", "Путь к файлу конфигурации (tags.yaml)")
 	flag.StringVar(&logDir, "logdir", "", "Каталог для логов (по умолчанию stdout/stderr)")
+	flag.StringVar(&logLevel, "loglevel", "info", "Уровень логирования: debug, info, warn, error")
 	flag.Parse()
 
 	// Инициализация логгера
-	if err := logging.Init(logDir); err != nil {
+	if err := logging.Init(logDir, logLevel); err != nil {
 		logging.Error("Ошибка инициализации логгера", "error", err)
 		os.Exit(1)
 	}
@@ -34,9 +33,6 @@ func main() {
 		os.Exit(1)
 	}
 	logging.Info("Конфигурация успешно загружена", "path", configPath)
-
-	// Передаём наш логгер в gologix
-	gologix.SetLogger(logging.Logger)
 
 	// Создаём необходимые директории
 	os.MkdirAll("data", 0755)

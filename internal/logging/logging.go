@@ -1,13 +1,12 @@
 package logging
 
 import (
+	"context"
 	"fmt"
-	"io"
 	"log/slog"
 	"os"
-	"path/filepath"
+	"strings"
 	"sync"
-	"time"
 )
 
 var (
@@ -15,45 +14,80 @@ var (
 	once   sync.Once
 )
 
+type SimpleHandler struct {
+	level slog.Level
+	out   *os.File
+}
+
+func NewSimpleHandler(level slog.Level, out *os.File) *SimpleHandler {
+	return &SimpleHandler{level: level, out: out}
+}
+
+func (h *SimpleHandler) Enabled(_ context.Context, lvl slog.Level) bool {
+	return lvl >= h.level
+}
+
+func (h *SimpleHandler) Handle(_ context.Context, r slog.Record) error {
+	level := fmt.Sprintf("[%s]", r.Level.String())
+	timestamp := r.Time.Format("2006-01-02T15:04:05.000Z07:00")
+
+	// Сообщение
+	msg := r.Message
+
+	// Собираем ключи, если есть
+	if r.NumAttrs() > 0 {
+		r.Attrs(func(a slog.Attr) bool {
+			msg += fmt.Sprintf(" %s=%v", a.Key, a.Value)
+			return true
+		})
+	}
+
+	fmt.Fprintf(h.out, "%s %s %s\n", timestamp, level, msg)
+	return nil
+}
+
+func (h *SimpleHandler) WithAttrs(attrs []slog.Attr) slog.Handler { return h }
+func (h *SimpleHandler) WithGroup(name string) slog.Handler       { return h }
+
 // Init инициализирует глобальный логгер slog.
 // Если logDir == "" → логи только в stdout/stderr.
 // Если logDir задан → логи дублируются в stdout + файл.
-func Init(logDir string) error {
-	var err error
-	once.Do(func() {
-		var handler slog.Handler
+// ------------------------------------------------------
+// Инициализация логгера (пример)
+// ------------------------------------------------------
+func Init(logDir string, levelStr string) error {
+	var handler slog.Handler
 
-		// Базовый обработчик (stdout)
-		opts := &slog.HandlerOptions{
-			AddSource: true,
-			Level:     slog.LevelInfo,
-		}
+	// Преобразуем уровень в slog.Level
+	var lvl slog.Level
+	switch strings.ToLower(levelStr) {
+	case "debug":
+		lvl = slog.LevelDebug
+	case "info":
+		lvl = slog.LevelInfo
+	case "warn", "warning":
+		lvl = slog.LevelWarn
+	case "error":
+		lvl = slog.LevelError
+	default:
+		return fmt.Errorf("неизвестный уровень логирования: %s", levelStr)
+	}
 
-		if logDir == "" {
-			handler = slog.NewTextHandler(os.Stdout, opts)
-			Logger = slog.New(handler)
-			return
-		}
-
-		// Если logDir указан → создаём файл
+	if logDir == "" {
+		// STDOUT/STDERR режим
+		handler = NewSimpleHandler(lvl, os.Stdout)
+	} else {
 		os.MkdirAll(logDir, 0755)
-		filename := filepath.Join(logDir, time.Now().Format("2006-01-02_15-04-05")+".log")
-
-		file, ferr := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
-		if ferr != nil {
-			err = fmt.Errorf("не удалось создать файл логов: %v", ferr)
-			handler = slog.NewTextHandler(os.Stdout, opts)
-			Logger = slog.New(handler)
-			return
+		f, err := os.OpenFile(logDir+"/plc_tsdb.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		if err != nil {
+			return err
 		}
+		handler = NewSimpleHandler(lvl, f)
+	}
 
-		// Дублируем вывод в stdout + файл
-		mw := io.MultiWriter(os.Stdout, file)
-		handler = slog.NewTextHandler(mw, opts)
-		Logger = slog.New(handler)
-	})
-
-	return err
+	Logger = slog.New(handler)
+	slog.SetDefault(Logger)
+	return nil
 }
 
 // Упрощённые функции

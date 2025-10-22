@@ -2,12 +2,12 @@ package plc
 
 import (
 	"fmt"
-	"log"
 	"sync"
 
 	// "time"
 
 	"plc_tsdb/internal/config"
+	"plc_tsdb/internal/logging"
 
 	"github.com/danomagnum/gologix"
 )
@@ -33,12 +33,26 @@ func NewPLCManager(cfg *config.Config) *PLCManager {
 		config:  cfg,
 	}
 
-	// Создаем клиенты для каждого ПЛК
+	// Создаём общий gologix.Logger, связанный с нашим slog
+	var goLogger gologix.LoggerInterface
+	if l, ok := gologix.NewLogger().(*gologix.Logger); ok {
+		l.SetLogger(logging.Logger) // logging.Logger — твой *slog.Logger
+		goLogger = l
+	}
+
+	// Создаем клиентов для каждого ПЛК
 	for plcName, plcConfig := range cfg.PLCs {
+		client := gologix.NewClient(plcConfig.Host)
+
+		// Назначаем логгер клиенту, если поддерживается
+		if goLogger != nil {
+			client.Logger = goLogger
+		}
+
 		manager.clients[plcName] = &PLCClient{
 			name:   plcName,
 			config: &plcConfig,
-			client: gologix.NewClient(plcConfig.Host),
+			client: client,
 		}
 	}
 
@@ -131,19 +145,19 @@ func (m *PLCManager) ReadTags(tagNames []string) (map[string]interface{}, error)
 	for _, tagName := range tagNames {
 		tagConfig, exists := m.config.Tags[tagName]
 		if !exists {
-			log.Printf("Тег %s не найден в конфигурации", tagName)
+			logging.Error("Тег не найден в конфигурации", "tagName", tagName)
 			continue
 		}
 
 		plcClient, exists := m.clients[tagConfig.PLC]
 		if !exists || !plcClient.isConnected {
-			log.Printf("ПЛК %s для тега %s недоступен", tagConfig.PLC, tagName)
+			logging.Warn("ПЛК недоступен", "PLC", tagConfig.PLC)
 			continue
 		}
 
 		value, err := plcClient.readSingleTag(tagName, tagConfig)
 		if err != nil {
-			log.Printf("Ошибка чтения тега %s: %v", tagName, err)
+			logging.Error("Ошибка чтения тега", "tagName", err)
 			continue
 		}
 
@@ -156,21 +170,13 @@ func (m *PLCManager) ReadTags(tagNames []string) (map[string]interface{}, error)
 
 // Connect подключает один ПЛК
 func (c *PLCClient) Connect() error {
-	// Настройка пути при необходимости
-	// if c.config.Slot != 0 {
-	// 	path, err := gologix.ParsePath(fmt.Sprintf("1,%d", c.config.Slot))
-	// 	if err == nil {
-	// 		c.client.Path = path
-	// 	}
-	// }
-
 	err := c.client.Connect()
 	if err != nil {
 		return fmt.Errorf("ошибка подключения к ПЛК %s: %w", c.name, err)
 	}
 
 	c.isConnected = true
-	log.Printf("Успешно подключен к ПЛК %s (%s)", c.name, c.config.Host)
+	logging.Info("Успешно подключен к ПЛК", "PLC", c.name, "IP", c.config.Host)
 	return nil
 }
 
@@ -179,7 +185,7 @@ func (c *PLCClient) Disconnect() {
 	if c.isConnected {
 		c.client.Disconnect()
 		c.isConnected = false
-		log.Printf("Отключен от ПЛК %s", c.name)
+		logging.Info("Отключен от ПЛК", "PLC", c.name)
 	}
 }
 
@@ -197,7 +203,7 @@ func (c *PLCClient) readTags(tags map[string]config.TagConfig) (map[string]inter
 			tagMap[tagName] = false
 		// ... другие типы
 		default:
-			log.Printf("Неподдерживаемый тип тега %s: %s", tagName, tagConfig.Type)
+			logging.Error("Неподдерживаемый тип тега", "TagName", tagName, "Type", tagConfig.Type)
 		}
 	}
 

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -9,6 +8,7 @@ import (
 
 	"plc_tsdb/internal/config"
 	"plc_tsdb/internal/database"
+	"plc_tsdb/internal/logging"
 	"plc_tsdb/internal/plc"
 )
 
@@ -41,7 +41,7 @@ func (s *CollectorService) Start() error {
 	}
 	defer s.plcManager.Disconnect()
 
-	log.Printf("Запуск сбора данных с интервалом %v", s.config.Polling.Interval)
+	logging.Info("Запуск сбора данных,", "интервал", s.config.Polling.Interval)
 
 	ticker := time.NewTicker(s.config.Polling.Interval)
 	defer ticker.Stop()
@@ -54,10 +54,10 @@ func (s *CollectorService) Start() error {
 		case <-ticker.C:
 			s.collectData()
 		case <-sigChan:
-			log.Println("Получен сигнал остановки")
+			logging.Info("Получен сигнал остановки")
 			return nil
 		case <-s.stopChan:
-			log.Println("Остановка по команде")
+			logging.Info("Остановка по команде")
 			return nil
 		}
 	}
@@ -66,16 +66,16 @@ func (s *CollectorService) Start() error {
 func (s *CollectorService) collectData() {
 	tags, err := s.plcManager.ReadAllTags()
 	if err != nil {
-		log.Printf("Ошибка чтения тегов: %v", err)
+		logging.Error("Ошибка чтения тегов:", "Error", err)
 	}
 
 	timestamp := time.Now()
 	if err := s.dbClient.Write(tags, timestamp); err != nil {
-		log.Printf("Ошибка записи в TSDB: %v", err)
+		logging.Error("Ошибка записи в TSDB^", "Error", err)
 		return
 	}
 
-	log.Printf("Успешно записано %d тегов в %v", len(tags), timestamp)
+	logging.Debug("Записано успешно в TSDB:", "кол-во тегов", len(tags), "время", timestamp)
 }
 
 func (s *CollectorService) Stop() {
