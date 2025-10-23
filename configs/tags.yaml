@@ -1,20 +1,130 @@
 plcs:
-  JAR:
+  JAR24:
     host: "192.168.0.140"
-  NAR:
+  NAR24:
     host: "192.168.0.40"
 
 tags:
   PT0386:
-    plc: NAR
+    plc: NAR24
+    type: "float32"
+    description: "SUCTION PRESSURE"
+    unit: "kPa"
+  PT0386a:
+    plc: NAR24
     type: "float32"
     description: "SUCTION PRESSURE"
     unit: "kPa"
   PT0356:
-    plc: JAR
+    plc: JAR24
     type: "float32"
-    description: "SUCTION PRESSURE JAR"
+    description: "SUCTION PRESSURE JAR24"
     unit: "kPa"
+  PT0356a:
+    plc: JAR24
+    type: "float32"
+    description: "SUCTION PRESSURE JAR24"
+    unit: "kPa"
+  PT0388:
+    plc: JAR24
+    type: "float32"
+    description: "1 DISCHARGE PRESSURE JAR24"
+    unit: "kPa"
+  PT0388a:
+    plc: JAR24
+    type: "float32"
+    description: "2 DISCHARGE PRESSURE JAR24"
+    unit: "kPa"
+  PT0389:
+    plc: NAR24
+    type: "float32"
+    description: "1 DISCHARGE PRESSURE NAR24"
+    unit: "kPa"
+  PT0389a:
+    plc: NAR24
+    type: "float32"
+    description: "2 DISCHARGE PRESSURE NAR24"
+    unit: "kPa"
+  #PUMP A
+  PDT0353:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP A Filter diff pressure"
+    unit: "kPa"
+  PT0353:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP A Suction pressure"
+    unit: "kPa"
+  PT0355:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP A Discharge pressure"
+    unit: "kPa"
+  TT0355:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP A Discharge temperature"
+    unit: "C"
+  ST0350:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP A Speed"
+    unit: "RPM"
+
+  #PUMP B
+  PDT0363:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP B Filter diff pressure"
+    unit: "kPa"
+  PT0363:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP B Suction pressure"
+    unit: "kPa"
+  PT0365:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP B Discharge pressure"
+    unit: "kPa"
+  TT0365:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP B Discharge temperature"
+    unit: "C"
+  ST0360:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP B Speed"
+    unit: "RPM"
+
+  #PUMP C
+  PDT0373:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP C Filter diff pressure"
+    unit: "kPa"
+  PT0373:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP C Suction pressure"
+    unit: "kPa"
+  PT0375:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP C Discharge pressure"
+    unit: "kPa"
+  TT0375:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP C Discharge temperature"
+    unit: "C"
+  ST0370:
+    plc: JAR24
+    type: "float32"
+    description: "ML PUMP C Speed"
+    unit: "RPM"
 
 #  "Program:MainProgram.hbTimer.ACC":
 #    type: "int32"
